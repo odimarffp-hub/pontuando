@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pontuando - O Jogo da Pontuação</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <header>
+            <h1>Pontuando</h1>
+            <p>Aprenda a pontuar lendo Machado de Assis!</p>
+        </header>
+
+        <main>
+            <!-- Painel de Controle Esquerdo -->
+            <aside class="control-panel">
+                <div class="turn-indicator">
+                    <h2 id="turn-title">Vez de:</h2>
+                    <div id="current-player" class="player-badge player-A">A</div>
+                    <div id="current-player-name" class="player-name-display">Jogador A</div>
+                </div>
+
+                <div class="players-status">
+                    <h3>Jogadores</h3>
+                    <ul id="players-list">
+                        <!-- Gerado dinamicamente -->
+                    </ul>
+                </div>
+
+                <div class="actions">
+                    <button id="btn-draw-card" class="btn primary">1. Sacar Carta</button>
+                    
+                    <div class="dice-container disabled" id="dice-container">
+                        <div id="dice" class="dice">
+                            <div class="dice-face">🎲</div>
+                        </div>
+                        <button id="btn-roll-dice" class="btn secondary" disabled>2. Rolar Dado</button>
+                    </div>
+
+                    <button id="btn-manage-prendas" class="btn btn-prendas">🎭 Gerenciar Prendas</button>
+                </div>
+            </aside>
+
+            <!-- Área do Tabuleiro -->
+            <section class="board-area">
+                <div id="board" class="board">
+                    <!-- As casas e o fundo serão gerados aqui -->
+                </div>
+                
+                <!-- Pinos dos Jogadores serão gerados dinamicamente -->
+                <div id="pieces-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal de Configuração Inicial -->
+    <div id="setup-modal" class="modal-overlay">
+        <div class="modal-content setup-content">
+            <h1 class="victory-title">Bem-vindo ao Pontuando!</h1>
+            
+            <div id="step-1">
+                <p class="instruction" style="font-size: 1.2rem; margin-bottom: 20px;">Quantas pessoas irão jogar?</p>
+                <div class="setup-buttons">
+                    <button class="btn primary btn-player-count" data-count="1">1 Jogador</button>
+                    <button class="btn primary btn-player-count" data-count="2">2 Jogadores</button>
+                    <button class="btn primary btn-player-count" data-count="3">3 Jogadores</button>
+                    <button class="btn primary btn-player-count" data-count="4">4 Jogadores</button>
+                </div>
+            </div>
+
+            <div id="step-2" class="hidden">
+                <p class="instruction" style="font-size: 1.2rem; margin-bottom: 20px;">Como se chamam os piratas?</p>
+                <div id="names-inputs-container" class="names-grid">
+                    <!-- Inputs de nomes gerados aqui -->
+                </div>
+                <button id="btn-start-game" class="btn success" style="margin-top: 20px;">Levantar Âncora!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal da Carta -->
+    <div id="card-modal" class="modal-overlay hidden">
+        <div class="modal-content card-modal-content">
+            <h2 class="card-title">Desafio de Pontuação</h2>
+            <p class="instruction">Adicione a pontuação correta à frase abaixo:</p>
+            
+            <div class="phrase-container">
+                <p id="phrase-unpunctuated" class="phrase"></p>
+            </div>
+
+            <!-- Citação do livro -->
+            <div class="book-citation" id="book-citation">
+                <span class="book-icon">📚</span>
+                <span id="book-source"></span>
+            </div>
+
+            <textarea id="answer-input" class="text-input" rows="3" placeholder="Insira os pontos aqui..."></textarea>
+            
+            <div class="validation-buttons" style="margin-top: 20px;">
+                <button id="btn-submit-answer" class="btn success">Confirmar Resposta</button>
+                <button id="btn-give-up" class="btn danger">Desistir / Ver Resposta</button>
+            </div>
+
+            <div id="answer-section" class="answer-section hidden">
+                <h3 id="answer-feedback-title"></h3>
+                <p id="phrase-punctuated" class="phrase correct"></p>
+                <div class="hint-box">
+                    <strong>Dica:</strong> <span id="phrase-hint"></span>
+                </div>
+                <button id="btn-close-card" class="btn primary" style="margin-top: 15px;">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Gerenciamento de Prendas -->
+    <div id="prendas-modal" class="modal-overlay hidden">
+        <div class="modal-content prendas-content">
+            <h2 class="prendas-title">🎭 Prendas do Jogo</h2>
+            <p class="instruction" style="margin-bottom: 15px;">Adicione ou remova prendas. Elas aparecem quando um jogador erra!</p>
+
+            <div id="prendas-list" class="prendas-list">
+                <!-- Gerado dinamicamente -->
+            </div>
+
+            <div class="add-prenda-form">
+                <input 
+                    type="text" 
+                    id="new-prenda-input" 
+                    class="prenda-input" 
+                    placeholder="Digite uma nova prenda criativa..." 
+                    maxlength="200"
+                >
+                <button id="btn-add-prenda" class="btn success">➕ Adicionar</button>
+            </div>
+
+            <div class="prendas-footer">
+                <button id="btn-reset-prendas" class="btn danger" style="flex:1;">↺ Restaurar Padrão</button>
+                <button id="btn-close-prendas" class="btn primary" style="flex:2;">✔ Salvar e Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Vitória -->
+    <div id="victory-modal" class="modal-overlay hidden">
+        <div class="modal-content victory-content">
+            <h1 class="victory-title">🎉 Fim de Jogo! 🎉</h1>
+            <p id="victory-message">O Jogador X alcançou a casa 40 e venceu o jogo!</p>
+            <button id="btn-restart" class="btn primary">Jogar Novamente</button>
+        </div>
+    </div>
+
+    <script src="cards.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

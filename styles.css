@@ -1,0 +1,818 @@
+:root {
+    --bg-color: #f0f4f8;
+    --primary-color: #d97706;
+    --primary-hover: #b45309;
+    --secondary-color: #dc2626;
+    --secondary-hover: #b91c1c;
+    --success-color: #059669;
+    --danger-color: #e11d48;
+    --text-main: #451a03;
+    --text-light: #78350f;
+    --card-bg: rgba(255, 251, 235, 0.95);
+    
+    --player-a: #2563eb; 
+    --player-b: #ea580c; 
+    --player-c: #16a34a; 
+    --player-d: #9333ea; 
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background: #1e293b;
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.game-container {
+    width: 98vw;
+    height: 98vh;
+    background: #78350f;
+    border-radius: 12px;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    border: 8px solid #451a03;
+}
+
+header {
+    text-align: center;
+    padding: 10px;
+    background: #451a03;
+    color: #fde68a;
+    border-bottom: 4px solid #78350f;
+}
+
+header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    letter-spacing: 2px;
+}
+
+main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Painel de Controle */
+.control-panel {
+    flex: 0 0 250px;
+    background: #fef3c7;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-right: 4px solid #451a03;
+}
+
+.turn-indicator {
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px dashed #b45309;
+}
+
+.player-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 2rem;
+    font-family: 'Fredoka One', cursive;
+    color: white;
+    margin: 5px auto;
+    border: 3px solid white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.player-name-display {
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: #451a03;
+    margin-top: 5px;
+}
+
+.player-A { background-color: var(--player-a); }
+.player-B { background-color: var(--player-b); }
+.player-C { background-color: var(--player-c); }
+.player-D { background-color: var(--player-d); }
+
+.players-status h3 { font-size: 1rem; margin-bottom: 10px; }
+.players-status ul { list-style: none; }
+.players-status li {
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    background: #fffbeb;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 800;
+    font-size: 0.9rem;
+    border: 1px solid #fde68a;
+}
+.players-status li.active {
+    background: #fde68a;
+    border-color: #b45309;
+    transform: scale(1.05);
+}
+
+.status-A { border-left: 5px solid var(--player-a); }
+.status-B { border-left: 5px solid var(--player-b); }
+.status-C { border-left: 5px solid var(--player-c); }
+.status-D { border-left: 5px solid var(--player-d); }
+
+.actions {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: white;
+    text-transform: uppercase;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+}
+
+.btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn.primary   { background-color: var(--primary-color); }
+.btn.secondary { background-color: var(--secondary-color); }
+.btn.success   { background-color: var(--success-color); }
+.btn.danger    { background-color: var(--danger-color); }
+
+/* Botão Prendas */
+.btn-prendas {
+    background: linear-gradient(135deg, #7c3aed, #5b21b6);
+    box-shadow: 0 4px 0 #3b0764;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 10px;
+}
+.btn-prendas:hover {
+    background: linear-gradient(135deg, #6d28d9, #4c1d95);
+}
+
+.dice-container {
+    text-align: center;
+    padding: 10px;
+    background: #fffbeb;
+    border-radius: 8px;
+    border: 2px solid #fde68a;
+}
+.dice { font-size: 3rem; margin-bottom: 5px; display: inline-block; transition: transform 0.5s; }
+.dice.rolling { animation: roll 0.5s infinite linear; }
+
+@keyframes roll {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Tabuleiro */
+.board-area {
+    flex: 1;
+    position: relative;
+    background: url('bg.png') center/cover no-repeat;
+    overflow: hidden;
+}
+
+.board {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.cell {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: #fef3c7;
+    border: 3px solid #b45309;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: #b45309;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    z-index: 5;
+    transform: translate(-50%, -50%);
+}
+
+.cell.start  { background: #059669; color: white; border-color: #064e3b; width: 60px; height: 60px; }
+.cell.finish { background: #dc2626; color: white; border-color: #7f1d1d; width: 60px; height: 60px; }
+
+/* Pinos */
+.piece {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    z-index: 10;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 900;
+    font-size: 0.7rem;
+}
+
+.piece-A { background-color: var(--player-a); }
+.piece-B { background-color: var(--player-b); }
+.piece-C { background-color: var(--player-c); }
+.piece-D { background-color: var(--player-d); }
+
+/* ================================================
+   MODAIS
+   ================================================ */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-overlay.hidden { display: none; }
+
+.modal-content {
+    background: #fffbeb;
+    border: 6px solid #451a03;
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 550px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.text-input {
+    width: 100%;
+    margin: 15px 0;
+    padding: 12px;
+    border: 3px solid #b45309;
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: white;
+    color: #451a03;
+    outline: none;
+}
+
+.phrase-container {
+    background: #fde68a;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border: 2px dashed #b45309;
+}
+
+.phrase { font-size: 1.3rem; font-weight: 800; color: #451a03; }
+.phrase.correct { color: #059669; }
+
+/* ================================================
+   CITAÇÃO DO LIVRO
+   ================================================ */
+.book-citation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    font-style: italic;
+    background: #1e293b;
+    color: #fde68a;
+    border: 2px solid #0f172a;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.book-citation .book-icon {
+    font-size: 1rem;
+    font-style: normal;
+}
+
+/* Cores por livro */
+.book-citation.livro-dom-casmurro {
+    background: linear-gradient(135deg, #1e3a5f, #1e293b);
+    border-color: #1e3a5f;
+    color: #bfdbfe;
+}
+
+.book-citation.livro-esaú-e-jacó,
+.book-citation.livro-esa-e-jac {
+    background: linear-gradient(135deg, #14532d, #1e293b);
+    border-color: #14532d;
+    color: #bbf7d0;
+}
+
+.book-citation.livro-quincas-borba {
+    background: linear-gradient(135deg, #7c2d12, #1e293b);
+    border-color: #7c2d12;
+    color: #fed7aa;
+}
+
+/* ================================================
+   PRENDA BOX (resultado)
+   ================================================ */
+.prenda-box {
+    margin-top: 15px;
+    padding: 15px;
+    background: #ffedd5;
+    border: 3px solid #f97316;
+    border-radius: 12px;
+    color: #7c2d12;
+    font-size: 1.1rem;
+    font-weight: 800;
+    animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.05); }
+}
+
+.hint-box {
+    background: #e0f2fe;
+    border: 2px solid #0284c7;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    font-size: 0.95rem;
+    color: #0c4a6e;
+    text-align: left;
+}
+
+/* ================================================
+   SETUP
+   ================================================ */
+.setup-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.names-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.name-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    padding: 5px 15px;
+    border-radius: 8px;
+    border: 2px solid #fde68a;
+}
+
+.name-input-group span {
+    font-family: 'Fredoka One', cursive;
+    color: #451a03;
+}
+
+.name-input-group input {
+    flex: 1;
+    border: none;
+    padding: 8px;
+    font-size: 1rem;
+    font-family: 'Nunito', sans-serif;
+    outline: none;
+}
+
+/* ================================================
+   MODAL DE PRENDAS
+   ================================================ */
+.prendas-content {
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.prendas-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.8rem;
+    color: #451a03;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.prendas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 12px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* Scrollbar personalizada */
+.prendas-list::-webkit-scrollbar { width: 6px; }
+.prendas-list::-webkit-scrollbar-track { background: #fde68a; border-radius: 3px; }
+.prendas-list::-webkit-scrollbar-thumb { background: #b45309; border-radius: 3px; }
+
+.prenda-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border: 2px solid #fde68a;
+    border-radius: 10px;
+    padding: 10px 12px;
+    transition: border-color 0.2s, background 0.2s;
+    animation: fadeSlideIn 0.25s ease;
+}
+
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.prenda-item:hover {
+    border-color: #f97316;
+    background: #fffbeb;
+}
+
+.prenda-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    background: #7c3aed;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 900;
+}
+
+.prenda-text {
+    flex: 1;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #451a03;
+    line-height: 1.4;
+}
+
+.btn-remove-prenda {
+    background: #fee2e2;
+    border: 2px solid #fca5a5;
+    color: #dc2626;
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.btn-remove-prenda:hover {
+    background: #dc2626;
+    color: white;
+    border-color: #dc2626;
+    transform: scale(1.1);
+}
+
+.add-prenda-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    align-items: stretch;
+}
+
+.prenda-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 3px solid #b45309;
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #451a03;
+    background: white;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.prenda-input:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.prenda-input.input-error {
+    border-color: #dc2626;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-6px); }
+    75%       { transform: translateX(6px); }
+}
+
+.add-prenda-form .btn {
+    width: auto;
+    padding: 10px 16px;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+.prendas-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.prendas-footer .btn {
+    width: auto;
+    font-size: 0.85rem;
+    padding: 10px 12px;
+}
+
+.no-prendas {
+    text-align: center;
+    color: #78350f;
+    font-style: italic;
+    padding: 20px;
+    background: #fef3c7;
+    border-radius: 8px;
+    border: 2px dashed #b45309;
+}
+
+/* ================================================
+   VITÓRIA
+   ================================================ */
+.victory-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: #451a03;
+    margin-bottom: 15px;
+}
+
+.instruction {
+    color: var(--text-light);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.card-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: #451a03;
+    margin-bottom: 8px;
+}
+
+.validation-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.validation-buttons .btn {
+    flex: 1;
+    width: auto;
+}
+
+.answer-section {
+    margin-top: 15px;
+    text-align: left;
+}
+
+.hidden { display: none !important; }
+
+/* ================================================
+   RESPONSIVO — CELULAR
+   ================================================ */
+@media (max-width: 768px) {
+
+    /* Corpo: permite rolagem caso o conteúdo não caiba */
+    body {
+        overflow-y: auto;
+        align-items: flex-start;
+    }
+
+    .game-container {
+        width: 100vw;
+        height: auto;
+        min-height: 100svh; /* small-viewport-height: respeita barra do browser */
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        border-width: 4px;
+    }
+
+    /* Header mais compacto */
+    header { padding: 6px 10px; }
+    header h1 { font-size: 1.35rem; letter-spacing: 1px; }
+    header p  { font-size: 0.72rem; }
+
+    /* Main vira coluna: painel em cima, tabuleiro embaixo */
+    main {
+        flex-direction: column;
+        overflow: visible;
+    }
+
+    /* ---- Painel de Controle: faixa horizontal ---- */
+    .control-panel {
+        flex: 0 0 auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        border-right: none;
+        border-bottom: 3px solid #451a03;
+        padding: 8px 10px;
+        gap: 8px;
+    }
+
+    /* Indicador de turno: horizontal e compacto */
+    .turn-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: none;
+        border-right: 2px dashed #b45309;
+        padding: 0 10px 0 0;
+    }
+
+    .turn-indicator h2 { font-size: 0.8rem; white-space: nowrap; }
+
+    .player-badge {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    .player-name-display {
+        font-size: 0.8rem;
+        margin-top: 0;
+        max-width: 72px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    /* Lista de jogadores: compacta */
+    .players-status { flex: 1; min-width: 110px; }
+    .players-status h3 { font-size: 0.75rem; margin-bottom: 4px; }
+    .players-status li {
+        font-size: 0.7rem;
+        padding: 4px 6px;
+        margin-bottom: 2px;
+    }
+
+    /* Botões de ação: linha completa */
+    .actions {
+        margin-top: 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 6px;
+    }
+
+    /* Touch: remove delay de 300ms e dá tamanho confortável */
+    .btn {
+        touch-action: manipulation;
+        font-size: 0.82rem;
+        padding: 10px 8px;
+    }
+
+    #btn-draw-card { flex: 1; min-width: 110px; }
+
+    /* Dado: exibe na horizontal sem o emoji separado */
+    .dice-container {
+        flex: 1;
+        min-width: 130px;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 8px;
+    }
+
+    /* Esconde o emoji de dado (a face já aparece no botão quando necessário) */
+    .dice { display: none; }
+
+    #btn-roll-dice { width: 100%; margin: 0; }
+
+    /* Prendas: ocupa a linha toda */
+    .btn-prendas { width: 100%; font-size: 0.78rem; }
+
+    /* ---- Área do Tabuleiro ---- */
+    .board-area {
+        flex: 1;
+        min-height: 58vw; /* garante espaço mínimo para o tabuleiro */
+    }
+
+    /* Casas menores */
+    .cell {
+        width: 34px;
+        height: 34px;
+        font-size: 0.75rem;
+        border-width: 2px;
+    }
+
+    .cell.start,
+    .cell.finish {
+        width: 42px;
+        height: 42px;
+        font-size: 0.8rem;
+    }
+
+    /* Pinos menores */
+    .piece {
+        width: 15px;
+        height: 15px;
+        font-size: 0.45rem;
+        border-width: 1px;
+    }
+
+    /* ---- Modais ---- */
+    .modal-content {
+        width: 96%;
+        padding: 16px 12px;
+        max-height: 92vh;
+        overflow-y: auto;
+        border-width: 4px;
+        border-radius: 14px;
+    }
+
+    .card-title   { font-size: 1.2rem; }
+    .phrase       { font-size: 1rem; }
+    .phrase-container { padding: 14px; }
+
+    .text-input {
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    /* Botões de validação: empilhados */
+    .validation-buttons { flex-direction: column; }
+    .validation-buttons .btn { width: 100%; }
+
+    .book-citation { font-size: 0.75rem; }
+    .hint-box      { font-size: 0.85rem; }
+    .victory-title { font-size: 1.5rem; }
+
+    /* ---- Modal de Prendas ---- */
+    .prendas-content { max-height: 92vh; }
+    .prendas-list    { max-height: 180px; }
+
+    .add-prenda-form { flex-direction: column; }
+    .add-prenda-form .btn { width: 100%; padding: 12px; }
+
+    .prenda-text { font-size: 0.85rem; }
+}
+
+/* Telas muito pequenas (< 400px) */
+@media (max-width: 400px) {
+    header h1 { font-size: 1.15rem; }
+
+    .cell { width: 28px; height: 28px; font-size: 0.62rem; }
+    .cell.start,
+    .cell.finish { width: 35px; height: 35px; }
+
+    .piece { width: 12px; height: 12px; font-size: 0.38rem; }
+}
