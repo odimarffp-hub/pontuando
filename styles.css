@@ -639,50 +639,62 @@ main {
 /* ================================================
    RESPONSIVO — CELULAR
    ================================================ */
+/* ── RESET GLOBAL PARA MOBILE ───────────────────────────── */
 @media (max-width: 768px) {
 
-    /* Corpo: permite rolagem caso o conteúdo não caiba */
+    html {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+
     body {
+        overflow-x: hidden;
         overflow-y: auto;
         align-items: flex-start;
+        min-height: 100dvh;   /* dvh: respeita barra flutuante do browser */
     }
 
     .game-container {
         width: 100vw;
         height: auto;
-        min-height: 100svh; /* small-viewport-height: respeita barra do browser */
+        min-height: 100dvh;   /* substitui 100svh */
         border-radius: 0;
         border-left: none;
         border-right: none;
         border-top: none;
         border-width: 4px;
+        box-sizing: border-box; /* garante que a borda não cause overflow-x */
     }
 
-    /* Header mais compacto */
     header { padding: 4px 10px; }
     header h1 { font-size: 1.2rem; letter-spacing: 1px; }
-    header p  { display: none; } /* Esconde o slogan para ganhar espaço vertical */
+    header p  { display: none; }
 
-    /* Main vira coluna: painel em cima, tabuleiro embaixo */
+    /* ── MAIN: coluna + scroll habilitado ───────────────── */
     main {
         flex-direction: column;
-        overflow: visible;
+        overflow: visible; /* NÃO herda o hidden do desktop */
+        flex: 1;
     }
 
-    /* ---- Painel de Controle: faixa horizontal ---- */
+    /* ── PAINEL DE CONTROLE: faixa horizontal ───────────── */
     .control-panel {
         flex: 0 0 auto;
         flex-direction: row;
-        flex-wrap: nowrap; /* Impede que os elementos pulem linha */
+        flex-wrap: nowrap;
         align-items: stretch;
         border-right: none;
         border-bottom: 2px solid #451a03;
         padding: 5px;
         gap: 5px;
         height: auto;
+        overflow: hidden; /* evita que filhos causem scroll horizontal */
+        width: 100%;
+        box-sizing: border-box;
     }
 
-    /* Indicador de turno: horizontal e compacto */
+    /* ── INDICADOR DE TURNO ─────────────────────────────── */
     .turn-indicator {
         display: flex;
         flex-direction: column;
@@ -693,9 +705,10 @@ main {
         border-right: 2px dashed #b45309;
         padding: 0 5px;
         min-width: 60px;
+        flex-shrink: 0;      /* impede colapso indesejado */
     }
 
-    .turn-indicator h2 { display: none; } /* Esconde "Vez de:" */
+    .turn-indicator h2 { display: none; }
 
     .player-badge {
         width: 32px;
@@ -715,16 +728,32 @@ main {
         line-height: 1;
     }
 
-    /* Lista de jogadores: horizontal */
-    .players-status { flex: 1; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
-    .players-status h3 { font-size: 0.6rem; margin-bottom: 2px; color: #78350f; text-align: center; text-transform: uppercase; }
-    .players-status ul { 
-        display: flex; 
-        flex-direction: row; 
+    /* ── STATUS DOS JOGADORES ───────────────────────────── */
+    .players-status {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 0;        /* permite shrink correto dentro do flex-pai */
+    }
+
+    .players-status h3 {
+        font-size: 0.6rem;
+        margin-bottom: 2px;
+        color: #78350f;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .players-status ul {
+        display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 3px; 
+        gap: 3px;
     }
+
     .players-status li {
         font-size: 0.6rem;
         padding: 2px 4px;
@@ -735,23 +764,27 @@ main {
         white-space: nowrap;
     }
 
-    /* Botões de ação: agrupados */
+    /* ── AÇÕES: largura automática, sem fixar 120px ──────── */
     .actions {
         margin-top: 0;
         flex-direction: column;
-        flex: 0 0 120px;
+        flex: 0 0 auto;      /* ERA: 0 0 120px — causava overflow */
+        width: 110px;        /* largura máxima sem forçar overflow */
+        min-width: 90px;
         gap: 4px;
+        flex-shrink: 0;
     }
 
     .btn {
         touch-action: manipulation;
         font-size: 0.7rem;
         padding: 6px 4px;
+        width: 100%;
     }
 
     #btn-draw-card { width: 100%; }
 
-    /* Dado: ultra compacto */
+    /* ── DADO ───────────────────────────────────────────── */
     .dice-container {
         display: flex;
         flex-direction: row;
@@ -761,30 +794,41 @@ main {
         padding: 2px 4px;
         background: #fffbeb;
         border: 1px solid #b45309;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .dice { display: none; }
 
-    #btn-roll-dice { width: 100%; margin: 0; font-size: 0.7rem; padding: 6px 4px; }
+    #btn-roll-dice {
+        width: 100%;
+        margin: 0;
+        font-size: 0.7rem;
+        padding: 6px 4px;
+    }
 
-    /* Prendas: compacto */
     .btn-prendas { width: 100%; font-size: 0.65rem; padding: 5px; }
 
-    /* ---- Área do Tabuleiro ---- */
+    /* ── ÁREA DO TABULEIRO ──────────────────────────────── */
     .board-area {
         flex: 1;
         background: #1e293b;
         overflow-y: auto;
-        display: block; /* Permite rolar o mapa longo */
+        overflow-x: hidden;
+        display: flex;          /* ERA: block — impedia preenchimento correto */
+        justify-content: center;
+        align-items: flex-start;
+        width: 100%;
     }
 
     .board {
         width: 100%;
         aspect-ratio: 1 / 1;
         background-size: 100% 100%;
+        flex-shrink: 0;
     }
 
-    /* Casas menores */
+    /* ── CASAS E PINOS ──────────────────────────────────── */
     .cell {
         width: 38px;
         height: 38px;
@@ -799,7 +843,6 @@ main {
         font-size: 0.9rem;
     }
 
-    /* Pinos menores e mais visíveis */
     .piece {
         width: 20px;
         height: 20px;
@@ -807,11 +850,11 @@ main {
         border-width: 1.5px;
     }
 
-    /* ---- Modais ---- */
+    /* ── MODAIS ─────────────────────────────────────────── */
     .modal-content {
         width: 96%;
         padding: 22px 18px;
-        max-height: 95vh;
+        max-height: 95dvh;     /* dvh em vez de vh */
         overflow-y: auto;
         border-width: 4px;
         border-radius: 16px;
@@ -827,7 +870,6 @@ main {
         margin: 10px 0;
     }
 
-    /* Botões de validação: empilhados para facilitar o touch */
     .validation-buttons { flex-direction: column; gap: 10px; }
     .validation-buttons .btn { width: 100%; margin: 0; padding: 14px; }
 
@@ -835,8 +877,8 @@ main {
     .hint-box      { font-size: 0.92rem; }
     .victory-title { font-size: 1.8rem; }
 
-    /* ---- Modal de Prendas ---- */
-    .prendas-content { max-height: 95vh; }
+    /* ── MODAL PRENDAS ──────────────────────────────────── */
+    .prendas-content { max-height: 95dvh; }
     .prendas-list    { max-height: 250px; }
 
     .add-prenda-form { flex-direction: column; gap: 8px; }
@@ -845,7 +887,7 @@ main {
     .prenda-text { font-size: 0.95rem; }
 }
 
-/* Telas muito pequenas (< 400px) */
+/* ── TELAS MUITO PEQUENAS (< 400px) ─────────────────────── */
 @media (max-width: 400px) {
     header h1 { font-size: 1.15rem; }
 
