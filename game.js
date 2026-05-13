@@ -151,7 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // TABULEIRO
     // ================================================
     function createBoard() {
+        // Preserva o container de peças para não perdê-lo ao redesenhar o tabuleiro
+        const pContainer = document.getElementById('pieces-container');
         boardEl.innerHTML = '';
+        if (pContainer) boardEl.appendChild(pContainer);
+
         for (let i = 1; i <= TOTAL_CELLS; i++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');

@@ -795,13 +795,22 @@ main {
         background: #fffbeb;
         border: 1px solid #b45309;
         width: 100%;
+        min-width: 0;        /* Previne que o dado force largura extra em telas muito estreitas */
         box-sizing: border-box;
     }
 
-    .dice { display: none; }
+    .dice { 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-size: 1.5rem; 
+        margin-right: 8px;
+        transition: transform 0.2s;
+        flex-shrink: 0;
+    }
 
     #btn-roll-dice {
-        width: 100%;
+        flex: 1; /* Ocupa o resto do espaço ao lado do dado */
         margin: 0;
         font-size: 0.7rem;
         padding: 6px 4px;
@@ -848,6 +857,11 @@ main {
         height: 20px;
         font-size: 0.6rem;
         border-width: 1.5px;
+        z-index: 21; /* Garante que fique sobre as casas */
+    }
+
+    #pieces-container {
+        z-index: 20;
     }
 
     /* ── MODAIS ─────────────────────────────────────────── */
