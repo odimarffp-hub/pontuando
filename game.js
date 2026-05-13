@@ -104,10 +104,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 const name = input.value.trim() || `Jogador ${id}`;
                 playerNames[id] = name;
             });
+
+            // Sorteia a ordem dos jogadores
+            shuffleArray(players);
+
             step2.classList.add('hidden');
             setupModal.classList.add('hidden');
             startGame();
         };
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
     }
 
     function showNameInputs(count) {
@@ -291,22 +302,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = gameCards[Math.floor(Math.random() * gameCards.length)];
         currentCard = card;
 
-        document.getElementById('phrase-unpunctuated').textContent = card.texto_sem_pontuacao;
-        answerInput.value = card.texto_sem_pontuacao;
-
-        // Exibe a citação do livro
-        bookSourceEl.textContent = card.fonte || '';
-
-        // Adiciona o badge do livro
+        const phraseUnp = document.getElementById('phrase-unpunctuated');
+        const cardTitle = document.querySelector('.card-modal-content .card-title');
+        const instruction = document.querySelector('.card-modal-content .instruction');
         const bookCitation = document.getElementById('book-citation');
-        bookCitation.className = 'book-citation';
-        if (card.livro) {
-            const livroSlug = card.livro
-                .toLowerCase()
-                .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
-                .replace(/\s+/g, '-')
-                .replace(/[^a-z-]/g, '');
-            bookCitation.classList.add(`livro-${livroSlug}`);
+
+        if (card.tipo === 'pergunta') {
+            cardTitle.textContent = "Desafio de Conhecimento";
+            instruction.textContent = "Responda à charada sobre o sinal de pontuação:";
+            phraseUnp.textContent = card.pergunta;
+            answerInput.value = "";
+            answerInput.placeholder = "Sua resposta (ex: Vírgula)...";
+            bookCitation.classList.add('hidden');
+        } else {
+            cardTitle.textContent = "Desafio de Pontuação";
+            instruction.textContent = "Adicione a pontuação correta à frase abaixo:";
+            phraseUnp.textContent = card.texto_sem_pontuacao;
+            answerInput.value = card.texto_sem_pontuacao;
+            answerInput.placeholder = "Insira os pontos aqui...";
+            bookCitation.classList.remove('hidden');
+
+            // Exibe a citação do livro
+            bookSourceEl.textContent = card.fonte || '';
+
+            // Adiciona o badge do livro
+            bookCitation.className = 'book-citation';
+            if (card.livro) {
+                const livroSlug = card.livro
+                    .toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
+                    .replace(/\s+/g, '-')
+                    .replace(/[^a-z-]/g, '');
+                bookCitation.classList.add(`livro-${livroSlug}`);
+            }
         }
 
         answerSection.classList.add('hidden');
@@ -326,10 +354,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     btnSubmitAnswer.onclick = () => {
-        const userText    = answerInput.value;
-        const correctText = currentCard.texto_correto;
-        const normalize   = s => s.trim().toLowerCase().replace(/\s+/g, ' ');
-        const isCorrect   = normalize(userText) === normalize(correctText);
+        const userText = answerInput.value;
+        const normalize = s => s.trim().toLowerCase().replace(/\s+/g, ' ')
+                                .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // remove acentos
+        
+        let isCorrect = false;
+        if (currentCard.tipo === 'pergunta') {
+            isCorrect = normalize(userText) === normalize(currentCard.resposta);
+        } else {
+            // Para frases do Machado, a normalização de acentos pode ser sensível, 
+            // vamos usar a normalização original sem remover acentos para não quebrar a pontuação/acentuação do autor
+            const normalizeSimple = s => s.trim().toLowerCase().replace(/\s+/g, ' ');
+            isCorrect = normalizeSimple(userText) === normalizeSimple(currentCard.texto_correto);
+        }
         showFeedback(isCorrect);
     };
 
@@ -342,8 +379,13 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSubmitAnswer.style.display = 'none';
         btnGiveUp.style.display       = 'none';
 
-        phrasePunctuated.textContent = currentCard.texto_correto;
-        phraseHint.textContent       = currentCard.dica || 'Preste atenção nos sinais de pontuação!';
+        if (currentCard.tipo === 'pergunta') {
+            phrasePunctuated.textContent = "Resposta: " + currentCard.resposta;
+        } else {
+            phrasePunctuated.textContent = currentCard.texto_correto;
+        }
+        
+        phraseHint.textContent = currentCard.dica || 'Preste atenção nos sinais de pontuação!';
 
         if (isCorrect) {
             feedbackTitle.textContent = '✅ Parabéns! Você acertou!';

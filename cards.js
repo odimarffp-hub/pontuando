@@ -2,7 +2,7 @@
 // Banco de frases retiradas das obras de Machado de Assis.
 // Cada carta contém a citação do livro de origem.
 
-const gameCards = [
+const machadoCards = [
 
     // ===================================================
     // DOM CASMURRO (1899)
@@ -255,6 +255,86 @@ const gameCards = [
         texto_correto: "— Sim, senhora, pergunto se não teriam brigado no ventre de sua mãe; não se lembra?",
         dica: "Travessão na fala; vírgula após 'Sim' e após vocativo; ponto e vírgula e interrogação."
     }
+];
+
+// Cartas de questionamento gramatical
+const questionCards = [
+    {
+        id: 101,
+        tipo: "pergunta",
+        pergunta: "Eu enumero, pauso, tenho muitas utilidades, e mesmo assim as pessoas não aprendem a me utilizar. Quem sou eu?",
+        resposta: "Vírgula",
+        dica: "Sou o sinal mais comum para pequenas pausas e enumerações."
+    },
+    {
+        id: 102,
+        tipo: "pergunta",
+        pergunta: "Eu sou usado para isolar informações breves, comentários, siglas e muito mais, você com certeza já me utilizou. Quem sou eu?",
+        resposta: "Parênteses",
+        dica: "Isolamos explicações ou comentários acessórios com este sinal."
+    },
+    {
+        id: 103,
+        tipo: "pergunta",
+        pergunta: "Sou a forma mais prática de escrever frases presentes em textos, falas de personagens, palavras estrangeiras e muito mais. Quem sou eu?",
+        resposta: "Aspas",
+        dica: "Utilizadas para destacar citações ou palavras com sentido especial."
+    },
+    {
+        id: 104,
+        tipo: "pergunta",
+        pergunta: "Indico uma interrupção na fala ou um pensamento que não terminou. Quem sou eu?",
+        resposta: "Reticências",
+        dica: "São aqueles três pontinhos seguidos."
+    },
+    {
+        id: 105,
+        tipo: "pergunta",
+        pergunta: "Sou usado para introduzir uma fala, uma explicação ou uma enumeração. Quem sou eu?",
+        resposta: "Dois-pontos",
+        dica: "Dois pontos sobrepostos."
+    },
+    {
+        id: 106,
+        tipo: "pergunta",
+        pergunta: "Sirvo para separar orações coordenadas muito longas ou que já possuem vírgulas. Quem sou eu?",
+        resposta: "Ponto e vírgula",
+        dica: "Uma mistura de ponto e vírgula."
+    },
+    {
+        id: 107,
+        tipo: "pergunta",
+        pergunta: "Indico o final de uma frase declarativa, encerrando um pensamento. Quem sou eu?",
+        resposta: "Ponto final",
+        dica: "O sinal mais básico de encerramento."
+    },
+    {
+        id: 108,
+        tipo: "pergunta",
+        pergunta: "Demonstro surpresa, espanto, alegria ou dou uma ordem. Quem sou eu?",
+        resposta: "Ponto de exclamação",
+        dica: "Usado para expressar emoções fortes."
+    },
+    {
+        id: 109,
+        tipo: "pergunta",
+        pergunta: "Sou utilizado para indicar uma pergunta direta. Quem sou eu?",
+        resposta: "Ponto de interrogação",
+        dica: "Apareço no final de todas as dúvidas."
+    },
+    {
+        id: 110,
+        tipo: "pergunta",
+        pergunta: "Sou usado para indicar a fala de um personagem em um diálogo ou isolar frases explicativas. Quem sou eu?",
+        resposta: "Travessão",
+        dica: "Um traço mais longo que o hífen."
+    }
+];
+
+// Unificando os baralhos e garantindo que todos tenham a propriedade 'tipo'
+const gameCards = [
+    ...machadoCards.map(c => ({ ...c, tipo: 'citacao' })),
+    ...questionCards
 ];
 
 window.gameCards = gameCards;
