@@ -311,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardTitle = document.querySelector('.card-modal-content .card-title');
         const instruction = document.querySelector('.card-modal-content .instruction');
         const bookCitation = document.getElementById('book-citation');
+        const contextHint = document.getElementById('context-hint');
 
         if (card.tipo === 'pergunta') {
             cardTitle.textContent = "Desafio de Conhecimento";
@@ -319,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
             answerInput.value = "";
             answerInput.placeholder = "Sua resposta (ex: Vírgula)...";
             bookCitation.classList.add('hidden');
+            if (contextHint) contextHint.classList.add('hidden');
             if (btnPlayAudio) btnPlayAudio.style.display = 'none';
         } else {
             cardTitle.textContent = "Desafio de Pontuação";
@@ -327,6 +329,16 @@ document.addEventListener('DOMContentLoaded', () => {
             answerInput.value = card.texto_sem_pontuacao;
             answerInput.placeholder = "Insira os pontos aqui...";
             bookCitation.classList.remove('hidden');
+            
+            if (contextHint) {
+                if (card.dica_contexto) {
+                    contextHint.textContent = card.dica_contexto;
+                    contextHint.classList.remove('hidden');
+                } else {
+                    contextHint.classList.add('hidden');
+                }
+            }
+            
             if (btnPlayAudio) btnPlayAudio.style.display = 'flex';
 
             // Exibe a citação do livro

@@ -81,8 +81,8 @@ const exemplosCards = [
         livro: "Autoria Própria",
         fonte: "Autoria Própria",
         texto_sem_pontuacao: "Olha Essa flor é muito bonita",
-        texto_correto: "Olha! Essa flor é muito bonita!",
-        dica: "Põe-se o ponto de exclamação depois de uma interjeição e para expressar emoções fortes."
+        texto_correto: "Olha, essa flor é muito bonita!",
+        dica: "Põe-se vírgula após o vocativo e ponto de exclamação para indicar surpresa, espanto, alegria."
     },
     {
         id: 202,
@@ -105,6 +105,7 @@ const exemplosCards = [
         livro: "Autoria Própria",
         fonte: "Autoria Própria",
         texto_sem_pontuacao: "Aqui nós vendemos bananas maçãs peras laranjas tangerinas",
+        dica_contexto: "(A enumeração dos itens não terminou)",
         texto_correto: "Aqui, nós vendemos bananas, maçãs, peras, laranjas, tangerinas...",
         dica: "Vírgula no início da frase e para separar itens de uma enumeração. Reticências para indicar que a enumeração não terminou."
     },
@@ -113,7 +114,8 @@ const exemplosCards = [
         livro: "Autoria Própria",
         fonte: "Autoria Própria",
         texto_sem_pontuacao: "Então ele disse Mas que bela menina",
-        texto_correto: 'Então ele disse: "Mas que bela menina!"',
+        dica_contexto: "(não há travessão)",
+        texto_correto: "Então ele disse: Mas que bela menina!",
         dica: "Dois pontos indicam que algo será dito e ponto de exclamação expressa emoção"
     },
     {
@@ -121,6 +123,7 @@ const exemplosCards = [
         livro: "Autoria Própria",
         fonte: "Autoria Própria",
         texto_sem_pontuacao: "Eu fiquei muito feliz quando ele disse Você está aprovada",
+        dica_contexto: "(não há aspas)",
         texto_correto: "Eu fiquei muito feliz quando ele disse: —Você está aprovada.",
         dica: "Dois pontos indicam que algo será dito e travessão indica a fala do personagem."
     },
@@ -128,8 +131,8 @@ const exemplosCards = [
         id: 208,
         livro: "Memórias Póstumas de Brás Cubas",
         fonte: "Memórias Póstumas de Brás Cubas — Machado de Assis (1899)",
-        texto_sem_pontuacao: "Esqueceu alguma cousa perguntou Marcela",
-        texto_correto: "Esqueceu alguma cousa? perguntou Marcela.",
+        texto_sem_pontuacao: "Esqueceu alguma coisa perguntou Marcela",
+        texto_correto: "Esqueceu alguma coisa? perguntou Marcela.",
         dica: "Ponto de interrogação para expressar uma pergunta direta. Ponto final para encerrar uma frase declarativa."
     },
     {
@@ -137,6 +140,7 @@ const exemplosCards = [
         livro: "Autoria Própria",
         fonte: "Autoria Própria",
         texto_sem_pontuacao: "Estava aqui pensando",
+        dica_contexto: "(Uma frase que ainda não terminou)",
         texto_correto: "Estava aqui pensando...",
         dica: "Reticências usadas para indicar interrupção ou incompletude do pensamento."
     },
@@ -145,6 +149,7 @@ const exemplosCards = [
         livro: "Memórias Póstumas de Brás Cubas",
         fonte: "Memórias Póstumas de Brás Cubas — Machado de Assis (1899)",
         texto_sem_pontuacao: "Nunca nunca meu amor",
+        dica_contexto: "(ênfase no meu amor)",
         texto_correto: "Nunca, nunca, meu amor!",
         dica: "Vírgula separando palavras repetidas e ponto de exclamação para expressar emoção."
     },
@@ -161,7 +166,7 @@ const exemplosCards = [
         livro: "Constituição Federal de 1988",
         fonte: "Constituição Federal de 1988 - Artigo 5º",
         texto_sem_pontuacao: "I - homens e mulheres são iguais em direitos e obrigações II - ninguém será obrigado a fazer ou deixar de fazer alguma coisa senão em virtude de lei",
-        texto_correto: "I - homens e mulheres são iguais em direitos e obrigações; II - ninguém será obrigado a fazer ou deixar de fazer alguma coisa senão em virtude de lei",
+        texto_correto: "I - homens e mulheres são iguais em direitos e obrigações; II - ninguém será obrigado a fazer ou deixar de fazer alguma coisa senão em virtude de lei.",
         dica: "Utiliza-se ponto e vírgula na redação oficial separando os itens de uma lei."
     }
 ];
