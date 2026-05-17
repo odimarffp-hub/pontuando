@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const phrasePunctuated     = document.getElementById('phrase-punctuated');
     const phraseHint           = document.getElementById('phrase-hint');
     const bookSourceEl         = document.getElementById('book-source');
+    const btnPlayAudio         = document.getElementById('btn-play-audio');
 
     // Prendas modal
     const prendasModal         = document.getElementById('prendas-modal');
@@ -318,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
             answerInput.value = "";
             answerInput.placeholder = "Sua resposta (ex: Vírgula)...";
             bookCitation.classList.add('hidden');
+            if (btnPlayAudio) btnPlayAudio.style.display = 'none';
         } else {
             cardTitle.textContent = "Desafio de Pontuação";
             instruction.textContent = "Adicione a pontuação correta à frase abaixo:";
@@ -325,6 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
             answerInput.value = card.texto_sem_pontuacao;
             answerInput.placeholder = "Insira os pontos aqui...";
             bookCitation.classList.remove('hidden');
+            if (btnPlayAudio) btnPlayAudio.style.display = 'flex';
 
             // Exibe a citação do livro
             bookSourceEl.textContent = card.fonte || '';
@@ -408,10 +411,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     btnCloseCard.onclick = () => {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         cardModal.classList.add('hidden');
         if (gameState === 'FAILED') { nextTurn(); }
         else { updateUI(); }
     };
+
+    let availableVoices = [];
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => {
+            availableVoices = window.speechSynthesis.getVoices();
+        };
+    }
+
+    if (btnPlayAudio) {
+        btnPlayAudio.onclick = () => {
+            // Interrompe qualquer áudio TTS que esteja tocando
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+            // 1. Tenta buscar o arquivo de áudio gravado (ex: AUDIO/card_201.m4a)
+            const audio = new Audio(`AUDIO/card_${currentCard.id}.m4a`);
+            
+            audio.oncanplaythrough = () => {
+                // Se o arquivo existir e puder ser tocado, toca a gravação real!
+                audio.play();
+            };
+
+            audio.onerror = () => {
+                // 2. Fallback: Se o arquivo MP3 não existir, usa a voz do navegador (TTS)
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(currentCard.texto_correto);
+                    utterance.lang = 'pt-BR';
+                    
+                    // Ajustes base
+                    utterance.rate = 0.85; 
+                    utterance.pitch = 1.05;
+
+                    if (currentCard.texto_correto.includes('!')) {
+                        utterance.pitch = 1.7; 
+                        utterance.rate = 1.15; 
+                    } else if (currentCard.texto_correto.includes('?')) {
+                        utterance.pitch = 1.0; 
+                        utterance.rate = 0.8; 
+                    }
+
+                    if (availableVoices.length === 0) {
+                        availableVoices = window.speechSynthesis.getVoices();
+                    }
+
+                    const ptVoices = availableVoices.filter(v => v.lang.includes('pt-BR') || v.lang === 'pt_BR');
+                    if (ptVoices.length > 0) {
+                        let bestVoice = ptVoices.find(v => 
+                            v.name.includes('Online') || v.name.includes('Natural') || 
+                            v.name.includes('Premium') || v.name.includes('Google')
+                        );
+                        if (!bestVoice) bestVoice = ptVoices[0];
+                        utterance.voice = bestVoice;
+                    }
+
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    alert('Nenhum áudio gravado encontrado e o navegador não suporta leitura em voz alta.');
+                }
+            };
+
+            // Força o carregamento para disparar o oncanplaythrough ou onerror
+            audio.load();
+        };
+    }
 
     function nextTurn() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
