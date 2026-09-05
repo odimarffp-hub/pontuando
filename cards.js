@@ -71,6 +71,20 @@ const questionCards = [
         pergunta: "Sou usado para indicar a fala de um personagem em um diálogo ou isolar frases explicativas. Quem sou eu?",
         resposta: "Travessão",
         dica: "Um traço mais longo que o hífen."
+    },
+    {
+        id: 111,
+        tipo: "pergunta",
+        pergunta: "Tenho a mesma função que as aspas que você conhece, mas sou usada em uma citação onde já existem aspas duplas. Quem sou eu?",
+        resposta: "aspas simples",
+        dica: "Citação dentro de citação"
+    },
+    {
+        id: 112,
+        tipo: "pergunta",
+        pergunta: "Eu indico que uma letra foi retirada na junção de duas palavras",
+        resposta: "Apóstrofo",
+        dica: "'copo de água, caixa de água... Pense nisso'"
     }
 ];
 
@@ -168,6 +182,13 @@ const exemplosCards = [
         texto_sem_pontuacao: "I - homens e mulheres são iguais em direitos e obrigações II - ninguém será obrigado a fazer ou deixar de fazer alguma coisa senão em virtude de lei",
         texto_correto: "I - homens e mulheres são iguais em direitos e obrigações; II - ninguém será obrigado a fazer ou deixar de fazer alguma coisa senão em virtude de lei.",
         dica: "Utiliza-se ponto e vírgula na redação oficial separando os itens de uma lei."
+    },
+    {
+        id: 213,
+        livro: "Autoria Própria",
+        fonte: "Autoria Própria",
+        texto_sem_pontuacao: "Todos absolutamente todos que estão nesta sala são responsáveis pelo roubo do banco",
+        texto_correto: "Todos, absolutamente todos que estão nesta sala são responsáveis pelo roubo do banco."
     }
 ];
 

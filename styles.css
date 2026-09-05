@@ -201,9 +201,20 @@ main {
 
 .board {
     width: 100%;
-    aspect-ratio: 1 / 1; /* Mantém o tabuleiro quadrado para alinhar com o mapa */
+    aspect-ratio: 16 / 10;
     position: relative;
-    background: url('bg.png') center/100% 100% no-repeat;
+    background: #1e293b;
+    overflow: hidden;
+}
+
+.board-screen {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 0;
 }
 
 .cell {
@@ -832,8 +843,7 @@ main {
 
     .board {
         width: 100%;
-        aspect-ratio: 1 / 1;
-        background-size: 100% 100%;
+        aspect-ratio: 16 / 10;
         flex-shrink: 0;
     }
 

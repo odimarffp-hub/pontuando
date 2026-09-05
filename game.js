@@ -1,7 +1,52 @@
 // game.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    const TOTAL_CELLS = 40;
+    const TOTAL_CELLS = 39;
+
+    const CELL_COORDS = [
+        { x: 91.5, y: 13 }, // 0: Começo
+        { x: 79.5, y: 13 }, // 1
+        { x: 72, y: 13 },   // 2
+        { x: 64.5, y: 13 }, // 3
+        { x: 57, y: 13 },   // 4
+        { x: 49.5, y: 13 }, // 5
+        { x: 42, y: 13 },   // 6
+        { x: 34.5, y: 13 }, // 7
+        { x: 27, y: 13 },   // 8
+        { x: 19.5, y: 13 }, // 9
+        { x: 12, y: 13 },   // 10
+        { x: 12, y: 25 },   // 11
+        { x: 12, y: 37 },   // 12
+        { x: 12, y: 49 },   // 13
+        { x: 12, y: 61 },   // 14
+        { x: 12, y: 73 },   // 15
+        { x: 12, y: 85 },   // 16
+        { x: 19.5, y: 85 }, // 17
+        { x: 27, y: 85 },   // 18
+        { x: 34.5, y: 85 }, // 19
+        { x: 42, y: 85 },   // 20
+        { x: 49.5, y: 85 }, // 21
+        { x: 57, y: 85 },   // 22
+        { x: 64.5, y: 85 }, // 23
+        { x: 72, y: 85 },   // 24
+        { x: 79.5, y: 85 }, // 25
+        { x: 87, y: 85 },   // 26
+        { x: 87, y: 73 },   // 27
+        { x: 87, y: 61 },   // 28
+        { x: 87, y: 49 },   // 29
+        { x: 87, y: 37 },   // 30
+        { x: 79.5, y: 37 }, // 31
+        { x: 72, y: 37 },   // 32
+        { x: 64.5, y: 37 }, // 33
+        { x: 57, y: 37 },   // 34
+        { x: 49.5, y: 37 }, // 35
+        { x: 42, y: 37 },   // 36
+        { x: 34.5, y: 37 }, // 37
+        { x: 34.5, y: 49 }, // 38
+        { x: 34.5, y: 64 }  // 39: Fim
+    ];
+
+
     let players = [];
     let playerNames = {};
     let currentPlayerIndex = 0;
@@ -140,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startGame() {
         playersPosition = {};
-        players.forEach(p => playersPosition[p] = 1);
+        players.forEach(p => playersPosition[p] = 0); // 0 = casa de Início, fora da contagem
         currentPlayerIndex = 0;
         gameState = 'WAITING_CARD';
         createBoard();
@@ -155,98 +200,29 @@ document.addEventListener('DOMContentLoaded', () => {
         // Preserva o container de peças para não perdê-lo ao redesenhar o tabuleiro
         const pContainer = document.getElementById('pieces-container');
         boardEl.innerHTML = '';
-        if (pContainer) boardEl.appendChild(pContainer);
 
-        for (let i = 1; i <= TOTAL_CELLS; i++) {
-            const cell = document.createElement('div');
-            cell.classList.add('cell');
-            if (i === 1) cell.classList.add('start');
-            if (i === TOTAL_CELLS) cell.classList.add('finish');
-            cell.id = `cell-${i}`;
-            cell.textContent = i === 1 ? 'I' : (i === TOTAL_CELLS ? 'F' : i);
-            const pos = getCellPosition(i);
-            cell.style.left = pos.x + '%';
-            cell.style.top = pos.y + '%';
-            boardEl.appendChild(cell);
-        }
-        drawPath();
+        // Painel de fundo único
+        const panel = document.createElement('div');
+        panel.className = 'board-screen';
+        panel.style.top    = '0%';
+        panel.style.height = '100%';
+        panel.style.backgroundImage = "url('Tabuleiro.png')";
+        boardEl.appendChild(panel);
+
+        if (pContainer) boardEl.appendChild(pContainer);
     }
 
     function getCellPosition(index) {
-        const rowHeight = 18;
-        const row = Math.floor((index - 1) / 8);
-        const colIndex = (index - 1) % 8;
-        let x, y;
-        y = 15 + (row * rowHeight);
-        if (row % 2 === 0) { x = 10 + (colIndex * 11.5); }
-        else { x = 90 - (colIndex * 11.5); }
-        x += Math.sin(index * 0.5) * 2;
-        y += Math.cos(index * 0.8) * 1.5;
-        return { x, y };
+        if (index < 0) index = 0;
+        if (index > TOTAL_CELLS) index = TOTAL_CELLS;
+        return CELL_COORDS[index];
     }
 
-    // ================================================
-    // TRILHA — caminho visual entre as casas
-    // ================================================
     function drawPath() {
-        // Remove SVG anterior para evitar duplicação
+        // O caminho já está desenhado na imagem de fundo, 
+        // então não precisamos gerar o SVG.
         const old = boardEl.querySelector('.path-svg');
         if (old) old.remove();
-
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.classList.add('path-svg');
-        // viewBox 0 0 100 100 com preserveAspectRatio=none:
-        // coordenadas em % mapeiam diretamente para a área do tabuleiro
-        svg.setAttribute('viewBox', '0 0 100 100');
-        svg.setAttribute('preserveAspectRatio', 'none');
-        svg.style.cssText = [
-            'position:absolute',
-            'top:0', 'left:0',
-            'width:100%', 'height:100%',
-            'pointer-events:none',
-            'z-index:2'
-        ].join(';');
-
-        // Coleta as posições de cada casa
-        const pts = [];
-        for (let i = 1; i <= TOTAL_CELLS; i++) {
-            const p = getCellPosition(i);
-            pts.push(`${p.x},${p.y}`);
-        }
-        const pointsStr = pts.join(' ');
-
-        // Camada 1 — sombra/borda da estrada
-        const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-        shadow.setAttribute('points', pointsStr);
-        shadow.setAttribute('fill', 'none');
-        shadow.setAttribute('stroke', 'rgba(60, 30, 10, 0.55)');
-        shadow.setAttribute('stroke-width', '4.5');
-        shadow.setAttribute('stroke-linecap', 'round');
-        shadow.setAttribute('stroke-linejoin', 'round');
-
-        // Camada 2 — terra batida da estrada
-        const road = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-        road.setAttribute('points', pointsStr);
-        road.setAttribute('fill', 'none');
-        road.setAttribute('stroke', 'rgba(194, 140, 70, 0.75)');
-        road.setAttribute('stroke-width', '3');
-        road.setAttribute('stroke-linecap', 'round');
-        road.setAttribute('stroke-linejoin', 'round');
-
-        // Camada 3 — linha central tracejada (estilo rodovia)
-        const dash = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-        dash.setAttribute('points', pointsStr);
-        dash.setAttribute('fill', 'none');
-        dash.setAttribute('stroke', 'rgba(255, 236, 153, 0.65)');
-        dash.setAttribute('stroke-width', '0.9');
-        dash.setAttribute('stroke-linecap', 'round');
-        dash.setAttribute('stroke-linejoin', 'round');
-        dash.setAttribute('stroke-dasharray', '2.5 3');
-
-        svg.appendChild(shadow);
-        svg.appendChild(road);
-        svg.appendChild(dash);
-        boardEl.appendChild(svg);
     }
 
     function createPieces() {
@@ -291,7 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
         players.forEach(id => {
             const li = document.createElement('li');
             li.className = `status-${id} ${id === cpID ? 'active' : ''}`;
-            li.innerHTML = `<span>${playerNames[id]}</span> <span class="pos">Casa ${playersPosition[id]}</span>`;
+            const posLabel = playersPosition[id] === 0 ? 'Início' : `Casa ${playersPosition[id]}`;
+            li.innerHTML = `<span>${playerNames[id]}</span> <span class="pos">${posLabel}</span>`;
             playersListEl.appendChild(li);
         });
 
