@@ -73,6 +73,7 @@ main {
     flex-direction: column;
     gap: 15px;
     border-right: 4px solid #451a03;
+    overflow-y: auto;
 }
 
 .turn-indicator {
@@ -294,6 +295,8 @@ main {
     padding: 30px;
     width: 90%;
     max-width: 550px;
+    max-height: 90vh;
+    overflow-y: auto;
     text-align: center;
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
@@ -833,17 +836,16 @@ main {
     .board-area {
         flex: 1;
         background: #1e293b;
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: hidden;
         display: flex;          /* ERA: block — impedia preenchimento correto */
         justify-content: center;
-        align-items: flex-start;
+        align-items: center;    /* centraliza o tabuleiro verticalmente no espaço disponível */
         width: 100%;
     }
 
     .board {
-        width: 100%;
-        aspect-ratio: 16 / 10;
+        /* Largura e altura agora são calculadas via JS (sizeBoard() em game.js)
+           para aproveitar o máximo do espaço disponível mantendo a proporção 16:10 */
         flex-shrink: 0;
     }
 
@@ -920,4 +922,62 @@ main {
     .cell.finish { width: 35px; height: 35px; }
 
     .piece { width: 12px; height: 12px; font-size: 0.38rem; }
+}
+
+/* ── CELULAR EM PAISAGEM (tela baixa, mesmo que larga) ──── */
+@media (max-height: 500px) and (orientation: landscape) {
+    .control-panel {
+        flex: 0 0 150px;
+        padding: 8px;
+        gap: 6px;
+    }
+
+    .turn-indicator {
+        padding-bottom: 6px;
+        gap: 0;
+    }
+
+    .turn-indicator h2 { font-size: 0.7rem; }
+
+    .player-badge {
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
+        margin: 2px auto;
+    }
+
+    .player-name-display { font-size: 0.8rem; margin-top: 2px; }
+
+    .players-status h3 { font-size: 0.65rem; margin-bottom: 4px; }
+
+    .players-status li {
+        padding: 3px 6px;
+        font-size: 0.65rem;
+        margin-bottom: 3px;
+    }
+
+    .actions { gap: 5px; }
+
+    .btn {
+        padding: 6px;
+        font-size: 0.7rem;
+    }
+
+    .btn-prendas { font-size: 0.62rem; padding: 5px; }
+
+    .dice-container { padding: 5px; }
+    .dice { font-size: 1.6rem; margin-bottom: 0; }
+
+    .modal-content {
+        max-height: 92vh;
+        padding: 14px 18px;
+    }
+
+    .card-title { font-size: 1.15rem; margin-bottom: 4px; }
+    .phrase-container { padding: 10px; margin-bottom: 6px; }
+    .phrase { font-size: 1rem; }
+    .text-input { margin: 8px 0; padding: 8px; font-size: 1rem; }
+    .validation-buttons { gap: 6px; }
+    .validation-buttons .btn { padding: 8px; }
+    .hint-box { padding: 6px 10px; font-size: 0.85rem; margin-top: 6px; }
 }

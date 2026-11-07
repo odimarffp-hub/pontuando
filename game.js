@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Elementos UI
     // ================================================
     const boardEl              = document.getElementById('board');
+    const boardAreaEl          = document.querySelector('.board-area');
     const piecesContainer      = document.getElementById('pieces-container');
     const playersListEl        = document.getElementById('players-list');
     const currentPlayerBadge   = document.getElementById('current-player');
@@ -188,9 +189,30 @@ document.addEventListener('DOMContentLoaded', () => {
         players.forEach(p => playersPosition[p] = 0); // 0 = casa de Início, fora da contagem
         currentPlayerIndex = 0;
         gameState = 'WAITING_CARD';
+        sizeBoard();
         createBoard();
         createPieces();
         updateUI();
+    }
+
+    // Calcula o maior tamanho possível para o tabuleiro (mantendo a proporção 16:10)
+    // que ainda caiba dentro do espaço disponível — evita sobra de espaço vazio
+    // em telas de celular na vertical.
+    function sizeBoard() {
+        if (!boardAreaEl) return;
+        const RATIO = 16 / 10;
+        const areaW = boardAreaEl.clientWidth;
+        const areaH = boardAreaEl.clientHeight;
+        if (!areaW || !areaH) return;
+
+        let w = areaW;
+        let h = w / RATIO;
+        if (h > areaH) {
+            h = areaH;
+            w = h * RATIO;
+        }
+        boardEl.style.width  = w + 'px';
+        boardEl.style.height = h + 'px';
     }
 
     // ================================================
@@ -524,10 +546,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.onresize = () => {
         if (gameState !== 'SETUP') {
+            sizeBoard();
             createBoard();
             updatePiecesPosition();
         }
     };
+
+    // Orientação do celular muda o clientHeight só depois de um pequeno atraso
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            if (gameState !== 'SETUP') {
+                sizeBoard();
+                createBoard();
+                updatePiecesPosition();
+            }
+        }, 200);
+    });
 
     // ================================================
     // GERENCIADOR DE PRENDAS
